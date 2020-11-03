@@ -24,9 +24,6 @@ class adtSolver3S2D():
         
         self.tauth = tauth[:,:,2:].transpose(2,1,0)
         self.tauph = tauph[:,:,2:].transpose(2,1,0)
-        
-        # print(self.tauth[:,0,0])
-        # sys.exit()
 
 
     def resThe(self,theta,y,phi): # along theta
@@ -53,17 +50,12 @@ class adtSolver3S2D():
         rang    = [self.phiGrid[0],self.phiGrid[-1]]
         sol     = solve_ivp(self.resPhi, rang, initVal, method='LSODA', t_eval=self.phiGrid, args=(self.theGrid[0],))
         iThVal  = sol.y.T  #<<<--- initial values for integration along the theta grid
-        # np.savetxt('tmp_ph', np.column_stack([self.phiGrid, sol.y.T]), delimiter='\t', fmt='%.8f')
-        # sys.exit()
 
         res  = np.empty((46,121,3))
         rang = [self.theGrid[0],self.theGrid[-1]]
         for i,phi in enumerate(self.phiGrid):
             sol = solve_ivp(self.resThe, rang, iThVal[i], method='LSODA', t_eval=self.theGrid, args=(phi,))#, rtol=1.0e-8, atol=1.0e-10)
             res[:,i,:] = sol.y.T
-            # np.savetxt('tmp_th_1d', np.column_stack([self.theGrid, sol.y.T]), delimiter='\t', fmt='%.8f')
-            # sys.exit()
-
 
         xx,yy = np.meshgrid(self.theGrid, self.phiGrid, indexing='ij')
         resToWrite = np.dstack([xx,yy,res])
