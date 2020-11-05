@@ -1,7 +1,6 @@
-3 state explicit ADT equation is solved along theta grid in three cases:
+3 state explicit ADT equation is solved along theta grid using:
 1. Fortran with `DLSODA` subroutine from `ODEPACK`
-2. Python with interpolation and `LSODA` differential solver from scipy
-3. Python with `LSODA` differential solver from scipy and Fortran interpolation routine used in "1" compiled with f2py
+2. Python with interpolation and `LSODA` differential solver from scipy.
 
 Execute everything:
 ```bash
@@ -15,9 +14,4 @@ cd ..
 cd PythonScipyInterp
 python3 adt_3s2d.py
 cd ..
-
-cd PythonFortInterp
-f2py -c interpolfort.f90 -m fInterp
-python3 adt_3s2d_f2py.py
-
 ```

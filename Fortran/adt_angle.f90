@@ -68,8 +68,8 @@ program name
 
     do i=1,gridP
         thisP = phi(i)
-        ! call DLSODE(fexp,ntau,y,tp,thisP,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jex,mf)
-        call DLSODA(fexp,ntau,y,tp,thisP,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jex,jt)
+        ! call DLSODE(fexp,ntau,y,tp,thisP,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jac,mf)
+        call DLSODA(fexp,ntau,y,tp,thisP,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jac,jt)
         angle(:,i,1) = y
     enddo
 
@@ -82,12 +82,11 @@ program name
         
         do j=1, gridR
                 thisR   = rho(j)
-                ! call DLSODE(fexr,ntau,y,tr,thisR,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jex,mf)
-                call DLSODA(fexr,ntau,y,tr,thisR,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jex,jt)
+                ! call DLSODE(fexr,ntau,y,tr,thisR,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jac,mf)
+                call DLSODA(fexr,ntau,y,tr,thisR,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,jac,jt)
                 angle(:,i,j) = y
         enddo
     enddo
-    !$omp end parallel do
 
     open(3,file='angle_fort.dat', status='unknown', action='write')
     do i=1,gridR
@@ -134,7 +133,7 @@ program name
         yOut(3) = -(sin(yIn(1))*tau(2)+cos(yIn(1))*tau(3))/cos(yIn(2))
     end
 
-    subroutine jex (nn, tTr, yy, ml, mu, pd, nrpd)  ! dummy jacobian routine
+    subroutine jac (nn, tTr, yy, ml, mu, pd, nrpd)  ! dummy jacobian routine
         integer :: nn,ml,mu,nrpd
         real(kind=8) :: yy(nn), pd(nrpd,nn),tTr
     end
@@ -309,8 +308,6 @@ subroutine InterPol(tau,xG,yG,nX,nY,nN,x,y,out)
 
     subroutine bcuint(y0,y1,y2,y12,ansy)  
 
-        ! This subroutine is used as a secondary subroutine in 'interpol'
-
         real(8), intent(in) :: y0(4),y1(4),y12(4),y2(4)
         real(8), intent(out)::ansy
         real(kind=8) :: c(4,4),xx(16),wt(16,16),t,u
@@ -323,7 +320,6 @@ subroutine InterPol(tau,xG,yG,nX,nY,nN,x,y,out)
             -1,1,6*0,3,-3,2*0,-2,2,5*0,1,-2,1,0,-2,4,-2,0,1,-2,1,9*0,-1,2,&
             -1,0,1,-2,1,10*0,1,-1,2*0,-1,1,6*0,-1,1,2*0,2,-2,2*0,-1,1/
         
-
         xx=[y0, y1*d1, y2*d2, y12*d1*d2]
         c = reshape(matmul(wt,xx),[4,4], order=[2,1])
         !^^^ call bcucof (y,y1,y2,y12,xu-xl,yu-yl,c)
