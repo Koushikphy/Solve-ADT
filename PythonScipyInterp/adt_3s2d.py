@@ -42,7 +42,7 @@ class adtSolver3S2D():
         if phGrid is None: phGrid = self.phiGrid
 
         if initZero:
-            iThVal  = np.repeat([[0,0,0]],phGrid.shape[0],axis=0)
+            iThVal  = np.full((phGrid.shape[0],3),0)
         else: # first solve along phi grid for the 1st theta value
             sol     = solve_ivp(self.resPhi, [phGrid[0],phGrid[-1]], [0,0,0], method='LSODA', t_eval=phGrid, args=(thGrid[0],)) #<- initial value [0,0,0]
             iThVal  = sol.y.T  #<<<--- initial values for integration along the theta grid
