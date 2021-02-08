@@ -10,12 +10,13 @@ program name
     real(kind=8), parameter :: rtol = 1.0d-8
     real(kind=8), parameter :: atol(ntau) = 1.0d-10
     integer, parameter :: itask = 1
+    integer, parameter :: iopt = 0
     ! integer, parameter :: lrw   = 22+9*ntau+ntau**2   ! for lsode
     integer, parameter :: lrw   = max(22+16*ntau, 22+9*ntau+ntau**2)  !lsoda
     integer, parameter :: liw   = 20+ntau
     integer, parameter :: mf    = 22  !for lsode
     integer, parameter :: jt    = 2   !for lsoda
-    integer:: istate, iopt, iwork(liw)
+    integer:: istate, iwork(liw)
     real(kind=8) :: rwork(lrw),tr,tp
 
     real(kind=8), parameter:: pi=4.0d0*datan(1.0d0)
@@ -63,7 +64,6 @@ program name
     thisR = rho(1)
     y     = 0.0d0
     istate= 1
-    iopt  = 0
 
 
     do i=1,gridP
@@ -78,7 +78,6 @@ program name
         thisP = phi(i)
         y     = angle(:,i,1)
         istate= 1
-        iopt  = 0
         
         do j=1, gridR
                 thisR   = rho(j)
