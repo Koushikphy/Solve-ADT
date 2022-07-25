@@ -140,8 +140,24 @@ def ang2diab(enr, ang):
     # A generalized diabatization function from energy and angle
     ns = enr.shape[1]
     ts = ang.shape[1]
+    #print(ns,ts)
 
     assert ts==(ns*(ns-1)/2), "Mismatch in energy and nact"
+
+    def createList():
+        # create unique list of diabatic element
+        mt = np.arange(ns*ns)
+        mt.shape = (ns,ns)
+        ls = [mt[i,i] for i in range(ns)] 
+
+        for j in range(ns):
+            for i in range(j):
+                ls.append(mt[i,j])
+
+        print(ls)
+        return ls
+
+    ls = createList()
 
     def aMat(y): 
         arr = np.zeros((ts, ns, ns))
@@ -159,7 +175,8 @@ def ang2diab(enr, ang):
 
     amat  = np.array([aMat(a) for a in ang])
 
-    dbDat = np.einsum("ijk,ij,ijl->ikl",amat,enr,amat).reshape(-1,16)[:,[0,4,7,9, 1, 2,5, 3,6,8]]
+    #dbDat = np.einsum("ijk,ij,ijl->ikl",amat,enr,amat).reshape(-1,16)[:,[0,4,7,9, 1, 2,5, 3,6,8]]
+    dbDat = np.einsum("ijk,ij,ijl->ikl",amat,enr,amat).reshape(-1,ns*ns)[:,ls]
     return dbDat
 
 
